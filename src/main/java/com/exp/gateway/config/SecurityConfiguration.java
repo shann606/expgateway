@@ -10,6 +10,8 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.session.InMemoryReactiveSessionRegistry;
+import org.springframework.security.core.session.ReactiveSessionRegistry;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +21,7 @@ import org.springframework.security.web.server.authentication.AuthenticationWebF
 import org.springframework.security.web.server.authentication.RedirectServerAuthenticationSuccessHandler;
 import org.springframework.security.web.server.authentication.ServerAuthenticationFailureHandler;
 import org.springframework.security.web.server.authentication.ServerFormLoginAuthenticationConverter;
+import org.springframework.security.web.server.authentication.SessionLimit;
 
 import com.exp.gateway.exception.ServerException;
 
@@ -27,7 +30,8 @@ import com.exp.gateway.exception.ServerException;
 public class SecurityConfiguration {
 
 	@Bean
-	SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http, ReactiveAuthenticationManager manager) {
+	SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http, ReactiveAuthenticationManager manager,
+			ReactiveSessionRegistry registry) {
 
 		AuthenticationWebFilter filter = new AuthenticationWebFilter(manager);
 
@@ -38,11 +42,24 @@ public class SecurityConfiguration {
 						r -> r.pathMatchers("/login", "/register", "/api/v1/users/**", "/api/**", "/css/**", "/js/**")
 								.permitAll().pathMatchers("/**").authenticated())
 
-				.httpBasic(Customizer.withDefaults())
-				.formLogin(login -> login.loginPage("/login")
+				.httpBasic(Customizer.withDefaults()).formLogin(login -> login.loginPage("/login")
+
 						.authenticationSuccessHandler(new RedirectServerAuthenticationSuccessHandler("/dashboard"))
+
 						.authenticationFailureHandler(customAuthenticationFailureHandler()))
-	
+
+				.sessionManagement(sessionMgt -> {
+
+					sessionMgt.concurrentSessions(session -> {
+						session.maximumSessions(SessionLimit.of(1));
+						
+						session.sessionRegistry(registry);
+						
+
+					});
+
+				})
+
 				.logout(x -> x.logoutUrl("/signout"))
 
 				.build();
@@ -76,6 +93,10 @@ public class SecurityConfiguration {
 		return new BCryptPasswordEncoder();
 	}
 
-	
-	
+	@Bean
+	ReactiveSessionRegistry reactiveSessionRegistry() {
+
+		return new InMemoryReactiveSessionRegistry();
+	}
+
 }

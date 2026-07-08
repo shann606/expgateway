@@ -3,6 +3,10 @@ spring:
         name: gateway
 server:
     port: 1000
+    reactive:
+      session:
+        timeout: 20m
+     
 logging:
     level:
         "[org.springframework.cloud.gateway]": DEBUG
