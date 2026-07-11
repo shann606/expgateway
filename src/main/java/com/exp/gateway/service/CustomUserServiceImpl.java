@@ -1,5 +1,7 @@
 package com.exp.gateway.service;
 
+import java.time.Duration;
+
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,13 +37,15 @@ public class CustomUserServiceImpl implements ReactiveUserDetailsService {
 				.onErrorResume(WebClientResponseException.class,
 						ex -> ex.getStatusCode().is5xxServerError() ? Mono.empty()
 								: Mono.error(new ServerException("downstream is down")))
+				.timeout(Duration.ofSeconds(5))
 
 				.map(u ->
 
 				new CustomUser(u.id(), u.username(), u.password(),
-						u.roles().stream().map(x -> new SimpleGrantedAuthority(x)).toList())
+						u.roles().stream().map(SimpleGrantedAuthority::new).toList())
 
-				);
+				)
+				;
 
 	}
 
