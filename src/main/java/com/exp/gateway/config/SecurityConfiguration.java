@@ -39,7 +39,7 @@ public class SecurityConfiguration {
 
 		return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
 				.authorizeExchange(
-						r -> r.pathMatchers("/login", "/register", "/api/v1/users/**", "/api/**", "/css/**", "/js/**")
+						r -> r.pathMatchers("/login", "/register", "/api/v1/users/**", "/api/**", "/css/**", "/js/**", "/assets/**")
 								.permitAll().pathMatchers("/**").authenticated())
 
 				.httpBasic(Customizer.withDefaults()).formLogin(login -> login.loginPage("/login")
