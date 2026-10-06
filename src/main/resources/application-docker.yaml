@@ -4,9 +4,9 @@ spring:
 server:
     port: 1000
     reactive:
-      session:
-        timeout: 20m
-     
+        session:
+            timeout: 20m
+
 logging:
     level:
         "[org.springframework.cloud.gateway]": DEBUG
@@ -19,10 +19,14 @@ logging:
         # org.springframework.cloud.gateway.filter.ratelimit: DEBUG
         #org.springframework.data.redis: DEBUG
         #io.lettuce.core: DEBUG
-
 gateway:
-    userservice: http://localhost:8080
-    categoryservice: http://localhost:8081
-    expenseservice: http://localhost:8082
-    uiservice: http://localhost:4000
-    authhost: http://localhost:8080/
+    userservice: lb://userservice
+    categoryservice: lb://categoryservice
+    expenseservice: lb://expenseservice
+    uiservice: lb://uiservice
+    authhost: http://host.docker.internal:8080/
+
+eureka:
+    client:
+        service-url:
+            defaultZone: http://host.docker.internal:8761/eureka

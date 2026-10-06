@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.exp</groupId>
-	<artifactId>gateway</artifactId>
+	<artifactId>expgateway</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name/>
 	<description/>
@@ -29,6 +29,8 @@
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2025.0.3</spring-cloud.version>
+		
+		<jib-build-plugin>3.5.1</jib-build-plugin>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -54,6 +56,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
 		
 	</dependencies>
 	<dependencyManagement>
@@ -67,12 +73,30 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
-	<build>
-		<plugins>
+<build>
+	<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>${jib-build-plugin}</version>
+				<configuration>
+					<to>
+						<image>${project.artifactId}:latest</image>
+					</to>
+					<container>
+						<ports>
+							<port>1000</port>
+						</ports>
+						<environment>
+							<SPRING_PROFILES_ACTIVE>docker</SPRING_PROFILES_ACTIVE>
+						</environment>
+						<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+					</container>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

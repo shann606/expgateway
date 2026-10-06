@@ -1,0 +1,30 @@
+{"properties": [{
+  "name": "gateway.userservice",
+  "type": "java.lang.String",
+  "description": "A description for 'gateway.userservice'"
+},
+{
+  "name": "gateway.categoryservice",
+  "type": "java.lang.String",
+  "description": "A description for 'gateway.categoryervice'"
+},
+{
+  "name": "gateway.expenseservice",
+  "type": "java.lang.String",
+  "description": "A description for 'gateway.expenseservice'"
+},
+{
+  "name": "gateway.uiservice",
+  "type": "java.lang.String",
+  "description": "A description for 'gateway.uiservice'"
+},
+{
+  "name": "gateway.authhost",
+  "type": "java.lang.String",
+  "description": "A description for 'gateway.authhost'"
+}
+
+
+
+
+]}

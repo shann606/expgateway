@@ -2,6 +2,7 @@ package com.exp.gateway.config;
 
 import java.time.Duration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -16,6 +17,9 @@ import reactor.netty.http.client.HttpClient;
 
 @Configuration
 public class WebClientConfig {
+	
+	@Value("${gateway.authhost}")
+	private String userServiceEndpoint;
 
 	@Bean
 	WebClient getWebClient() {
@@ -24,7 +28,7 @@ public class WebClientConfig {
 				.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000) // Connect Timeout
 				.option(ChannelOption.SO_KEEPALIVE, true); // Keep-Alive
 
-		return WebClient.builder().baseUrl("http://localhost:8080")
+		return WebClient.builder().baseUrl(userServiceEndpoint)
 				.clientConnector(new ReactorClientHttpConnector(httpClient))
 
 				.build();
