@@ -15,7 +15,7 @@ import com.exp.gateway.customuser.CustomUser;
 
 @Configuration
 public class ApiGatewayConfiguration {
-	
+
 	@Value("${gateway.userservice}")
 	private String userServiceEndpoint;
 	@Value("${gateway.categoryservice}")
@@ -24,6 +24,8 @@ public class ApiGatewayConfiguration {
 	private String expenseServiceEndpoint;
 	@Value("${gateway.uiservice}")
 	private String uiServiceEndpoint;
+	@Value("${gateway.aiservice}")
+	private String aiServiceEndpoint;
 
 	@Bean
 	RouteLocator expenseTrackRoute(RouteLocatorBuilder builder) {
@@ -80,6 +82,21 @@ public class ApiGatewayConfiguration {
 						)
 
 								.uri(expenseServiceEndpoint))
+
+				.route("ai-service",
+						r -> r.path("/api/v1/aiservice/**").filters(
+								f -> f.addRequestHeader("X-Source", "gateway").filter((exchange, chain) -> exchange
+										.getPrincipal().cast(Authentication.class).flatMap(authentication -> {
+
+											CustomUser user = (CustomUser) authentication.getPrincipal();
+
+											ServerHttpRequest request = exchange.getRequest().mutate()
+													.header("X-Username", user.getUsername()).build();
+
+											return chain.filter(exchange.mutate().request(request).build());
+										}).switchIfEmpty(chain.filter(exchange)))
+
+						).uri(aiServiceEndpoint))
 
 				.route("login",
 						r -> r.path("/login", "/register", "/api/**", "/css/**", "/js/**")
