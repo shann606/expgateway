@@ -22,6 +22,11 @@
   "name": "gateway.authhost",
   "type": "java.lang.String",
   "description": "A description for 'gateway.authhost'"
+},
+{
+  "name": "gateway.aiservice",
+  "type": "java.lang.String",
+  "description": "A description for 'gateway.aiservice'"
 }
 
 

@@ -25,6 +25,7 @@ gateway:
     expenseservice: lb://expenseservice
     uiservice: lb://uiservice
     authhost: http://host.docker.internal:8080/
+    aiservice: lb://ai-service
 
 eureka:
     client:

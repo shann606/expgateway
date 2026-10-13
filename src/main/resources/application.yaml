@@ -26,3 +26,4 @@ gateway:
     expenseservice: http://localhost:8082
     uiservice: http://localhost:4000
     authhost: http://localhost:8080/
+    aiservice: http://localhost:9090
